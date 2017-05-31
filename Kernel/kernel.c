@@ -82,21 +82,13 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-static int i = 0;
-char *video = (char *) 0xB8000;
-
-void tickHandler() {
-	video[i++] = i;	
-}
-
 int main()
 {	
 	setupIDT();
 
+	clearScreen();
+
 	while (1) {
-		int k = 0;
-		while(k < 1000*1000*20) {
-			k++;
-		}
+		
 	}
 }

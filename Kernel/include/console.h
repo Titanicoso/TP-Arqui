@@ -29,6 +29,8 @@ void cursorLeft();
 
 void cursorRight();
 
+void blinkCursor();
+
 void shiftScreen();
 
 void clearScreen();

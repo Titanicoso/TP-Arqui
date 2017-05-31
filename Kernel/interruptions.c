@@ -1,5 +1,6 @@
 //interruptions.c
 #include <interruptions.h>
+#include <console.h>
 
 #pragma pack(push)
 #pragma pack(1)
@@ -21,7 +22,13 @@ typedef void (*handler_t)(void);
 static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;
 static handler_t handlers[] = {tickHandler};
 
-void tickHandler() {	
+void tickHandler() {
+	static int count = 0;
+	count++;
+	if(count == 15*1000*1000) { //Cada 825ms
+		blinkCursor();
+		count = 0;
+	}
 }
 
 void irqDispatcher(int irq) {

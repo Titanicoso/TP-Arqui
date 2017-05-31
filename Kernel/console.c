@@ -1,5 +1,4 @@
 #include <console.h>
-#include <naiveConsole.h>
 #include <lib.h>
 
 typedef struct {
@@ -14,12 +13,11 @@ static video_row *video = (video_row*) 0xB8000;
 
 static const uint8_t width = 80;
 static const uint8_t height = 25;
-static const uint8_t cellSize = 2;
+static const uint8_t cellSize = 2;              
 
-//static cell_t video[width] = (cell_t[][width]) 0xB8000;
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
-static char defaultStyle = 0x0F;
+static char defaultStyle = 0x07;
 
 static char buffer[64];
 
@@ -63,7 +61,6 @@ void setStyle(char style) {
 }
 
 void incrementCursor() {
-	//ncPrintChar('k');
 	if(cursorX == width-1) {
 		cursorX = 0;
 
@@ -117,9 +114,12 @@ void cursorRight() {
 		cursorX++;
 }
 
+void blinkCursor() {
+	video[cursorY][cursorX].style = 0x77 ^ video[cursorY][cursorX].style;
+}
+
 void shiftScreen() {
 	memcpy((uint8_t*) video[0], (uint8_t*) video[1], cellSize*width*(height-1));
-	//memset((uint8_t*) video[height-1], ' ', cellSize*width);
 	for(uint8_t x = 0; x < width; x++) {
 			video[height-1][x].ch = ' ';
 			video[height-1][x].style = defaultStyle;
@@ -186,40 +186,4 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base) {
 
 	return digits;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
