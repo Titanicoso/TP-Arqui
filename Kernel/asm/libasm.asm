@@ -3,12 +3,14 @@ GLOBAL sti
 GLOBAL cli
 GLOBAL irq0Handler
 GLOBAL irq1Handler
+GLOBAL irq12Handler
 GLOBAL setPicMaster
 GLOBAL setPicSlave
-GLOBAL input
-GLOBAL output
+GLOBAL readPort
+GLOBAL writePort
 
 EXTERN irqDispatcher
+EXTERN sendEOI
 
 %include "./asm/macros.m"
 
@@ -19,6 +21,9 @@ irq0Handler:
 
 irq1Handler:
 	irqHandler 1
+
+irq12Handler:
+	irqHandler 12
 
 sti:
 	sti
@@ -34,7 +39,7 @@ setPicMaster:
 setPicSlave:
 	setPicMask 0xA1
 
-input:	;(Recibe el puerto a leer en rdi)
+readPort:	;(Recibe el puerto a leer en rdi)
 	push rbp
 	mov rbp, rsp
 
@@ -45,7 +50,8 @@ input:	;(Recibe el puerto a leer en rdi)
 	pop rbp
 	ret
 
-output: ;(Recibe el puerto a escribir en rdi y en rsi lo que hay que escribir)
+
+writePort: ;(Recibe el puerto a escribir en rdi y en rsi lo que hay que escribir)
 	push rbp
 	mov rbp, rsp
 

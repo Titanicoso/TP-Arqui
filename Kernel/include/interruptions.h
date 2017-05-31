@@ -8,11 +8,13 @@ void sti();
 void cli();
 void setPicMaster(uint8_t mask);
 void setPicSlave(uint8_t mask);
+void sendEOI(int irq);
 void setupIDT();
 void irqDispatcher(int irq);
 void tickHandler();
 
 extern void irq0Handler();
 extern void irq1Handler();
+extern void irq12Handler();
 
 #endif

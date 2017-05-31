@@ -1,6 +1,9 @@
 //interruptions.c
 #include <interruptions.h>
+#include <lib.h>
 #include <console.h>
+#include <keyboard.h>
+#include <mouse.h>
 
 #pragma pack(push)
 #pragma pack(1)
@@ -20,7 +23,6 @@ typedef struct {
 typedef void (*handler_t)(void);
 
 static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;
-static handler_t handlers[] = {tickHandler};
 
 void tickHandler() {
 	static int count = 0;
@@ -32,9 +34,24 @@ void tickHandler() {
 }
 
 void irqDispatcher(int irq) {
-	handlers[irq]();
+	switch(irq) {
+		case 0:
+			tickHandler();
+			break;
+		case 1:
+			keyboardHandler();
+			break;
+		case 12:
+			mouseHandler();
+			break;
+	}
 }
 
+void sendEOI(int irq) {
+	if(irq >= 8)
+		writePort(0xA0, 0x20);
+	writePort(0x20, 0x20);
+}
 
 void iSetHandler(int index, uint64_t handler) {
 	IDT[index].offset_l = (uint16_t) handler & 0xFFFF;
@@ -49,11 +66,14 @@ void iSetHandler(int index, uint64_t handler) {
 	
 }
 
-void setupIDT(){
+void setupIDT() {
 	iSetHandler(0x20, (uint64_t) &irq0Handler);
 	iSetHandler(0x21, (uint64_t) &irq1Handler);
+	iSetHandler(0x2C, (uint64_t) &irq12Handler);
 
-	setPicMaster(0xFE);
+	initializeMouse();
+
+	setPicMaster(0xF9);
 	setPicSlave(0xFF);
 	sti();
 }

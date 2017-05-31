@@ -54,8 +54,9 @@
 	mov rdi, %1
 	call irqDispatcher
 	
-	mov al, 20h ; EOI
-	out 20h, al
+	call sendEOI
+	;mov al, 20h ; EOI
+	out 20h, al;
 	
 	popaq
 
