@@ -16,7 +16,17 @@ typedef struct {
 
 #pragma pack(pop)
 
+typedef void (*handler_t)(void);
+
 static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;
+static handler_t handlers[] = {tickHandler};
+
+void tickHandler() {	
+}
+
+void irqDispatcher(int irq) {
+	handlers[irq]();
+}
 
 
 void iSetHandler(int index, uint64_t handler) {
@@ -30,5 +40,14 @@ void iSetHandler(int index, uint64_t handler) {
 	IDT[index].attrs = 0x8E;
 	IDT[index].zero_h = 0;	
 	
+}
+
+void setupIDT(){
+	iSetHandler(0x20, (uint64_t) &irq0Handler);
+	iSetHandler(0x21, (uint64_t) &irq1Handler);
+
+	setPicMaster(0xFE);
+	setPicSlave(0xFF);
+	sti();
 }
 

@@ -35,6 +35,18 @@
 	pop rax
 %endmacro
 
+%macro setPicMask 1
+	push rbp
+	mov rbp, rsp
+
+	mov rax, rdi
+	out %1, al
+
+	mov rsp, rbp
+	pop rbp
+	ret
+%endmacro
+
 
 %macro irqHandler 1
 	pushaq

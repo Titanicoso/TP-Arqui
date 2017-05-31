@@ -4,6 +4,15 @@
 #include <stdint.h>
 
 void iSetHandler(int index, uint64_t handler);
+void sti();
+void cli();
+void setPicMaster(uint8_t mask);
+void setPicSlave(uint8_t mask);
+void setupIDT();
+void irqDispatcher(int irq);
+void tickHandler();
 
+extern void irq0Handler();
+extern void irq1Handler();
 
 #endif

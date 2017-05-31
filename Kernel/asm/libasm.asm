@@ -1,8 +1,12 @@
 GLOBAL cpuVendor
 GLOBAL sti
-GLOBAL setPicMaster
+GLOBAL cli
 GLOBAL irq0Handler
 GLOBAL irq1Handler
+GLOBAL setPicMaster
+GLOBAL setPicSlave
+GLOBAL input
+GLOBAL output
 
 EXTERN irqDispatcher
 
@@ -12,19 +16,43 @@ section .text
 
 irq0Handler:
 	irqHandler 0
-	
+
+irq1Handler:
+	irqHandler 1
 
 sti:
 	sti
 	ret
+
+cli:
+	cli
+	ret
 	
 setPicMaster:
+	setPicMask 0x21
+
+setPicSlave:
+	setPicMask 0xA1
+
+input:	;(Recibe el puerto a leer en rdi)
 	push rbp
 	mov rbp, rsp
-	
-	mov rax, rdi
-	out 21h, al
-	
+
+	mov rdx, rdi
+	in al, dx
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+output: ;(Recibe el puerto a escribir en rdi y en rsi lo que hay que escribir)
+	push rbp
+	mov rbp, rsp
+
+	mov rax, rsi
+	mov rdx, rdi
+	out dx, al
+
 	mov rsp, rbp
 	pop rbp
 	ret

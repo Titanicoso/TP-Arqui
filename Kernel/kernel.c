@@ -89,31 +89,14 @@ void tickHandler() {
 	video[i++] = i;	
 }
 
-void sti();
-void irq0Handler();
-void setPicMaster(uint16_t);
-
-typedef void (*handler_t)(void);
-
-handler_t handlers[] = {tickHandler};
-
-void irqDispatcher(int irq) {
-	handlers[irq]();
-}
-
 int main()
 {	
-	iSetHandler(0x20, (uint64_t) irq0Handler);
-	
-	setPicMaster(0xFE);
-	
-	sti();
+	setupIDT();
 
 	while (1) {
 		int k = 0;
 		while(k < 1000*1000*20) {
 			k++;
 		}
-		printHex(i);
 	}
 }
