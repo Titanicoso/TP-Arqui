@@ -4,31 +4,32 @@ int ptEntryPresent(uint64_t index){
 	return 1;
 }
 
-void* getPhyAddr(void* virtualAddr){
+void* getPhyAddr(void* linearAddr){
 
-	uint64_t ptindex = (uint64_t)virtualAddr >> 22 & 0x1FFFFF;
-	uint64_t* pt = 0x1000000;
+	uint32_t ptindex = (uint32_t)linearAddr >> 22 & 0x1FFFFF;
+	//la tabla de paginas esta en fisica a partir del 32avo mega
+	uint32_t* pt = 0x1000000;
 
 	if(ptEntryPresent(ptindex));
-	if((uint64_t)(pt+(ptindex * 0x400)) & 0x1 == 0)
-		return (void*)0;
+	if((uint32_t)(pt+(ptindex * 0x400)) & 0x1 == 0)
+		//excepcion de page not present
 
-	return (void*)((pt[ptindex] & ~0x3FFFFF)+((uint64_t)virtualAddr & 0x3FFFFF));
+	return (void*)((pt[ptindex] & ~0x3FFFFF)+((uint32_t)linearAddr & 0x3FFFFF));
 }
 
-void mapPage(void* physAddr, void*virtualAddr, uint64_t flags){
+void mapPage(void* physAddr, void*linearAddr, uint32_t flags){
 
-	if(!((uint64_t)physAddr & ~0x400000 == (uint64_t)0 && (uint64_t)virtualAddr & ~0x400000 == (uint64_t)0)){
+	if(!((uint32_t)physAddr & ~0x400000 == (uint32_t)0 && (uint32_t)linearAddr & ~0x400000 == (uint32_t)0)){
 		return;
 	}
  
- 	uint64_t ptindex = (uint64_t)virtualAddr >> 22 & 0x1FFFFF;
-	uint64_t* pt = 0x1000000;
+ 	uint32_t ptindex = (uint32_t)linearAddr >> 22 & 0x1FFFFF;
+	uint32_t* pt = 0x1000000;
 
 	if(ptEntryPresent(ptindex));
-	if((uint64_t)(pt+(ptindex * 0x400)) & 0x1 == 1)
+	if((uint32_t)(pt+(ptindex * 0x400)) & 0x1 == 1)
 		return;
 
-	pt[ptindex] = ((uint64_t)physAddr) | (flags &0x3FFFFF) | 0x01;
+	pt[ptindex] = ((uint32_t)physAddr) | (flags &0x3FFFFF) | 0x01;
 
 }
