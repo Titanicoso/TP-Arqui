@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define WIDTH 80
+#define HEIGHT 25
+
 void printc(char ch);
 
 void printcWithStyle(char ch, char style);

@@ -1,6 +1,8 @@
 #include <console.h>
 #include <lib.h>
 
+#define CELLSIZE 2
+
 typedef struct {
 	char ch;
 	char style;
@@ -8,12 +10,7 @@ typedef struct {
 
 
 typedef cell_t video_row[80];
-static video_row *video = (video_row*) 0xB8000;
-
-
-static const uint8_t width = 80;
-static const uint8_t height = 25;
-static const uint8_t cellSize = 2;              
+static video_row *video = (video_row*) 0xB8000;              
 
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
@@ -61,10 +58,10 @@ void setStyle(char style) {
 }
 
 void incrementCursor() {
-	if(cursorX == width-1) {
+	if(cursorX == WIDTH-1) {
 		cursorX = 0;
 
-		if(cursorY == height-1)
+		if(cursorY == HEIGHT-1)
 			shiftScreen();
 		else
 			cursorY++;
@@ -76,17 +73,17 @@ void incrementCursor() {
 void newLine() {
 	cursorX = 0;
 
-	if(cursorY == height-1)
+	if(cursorY == HEIGHT-1)
 		shiftScreen();
 	else
 		cursorY++;
 }
 
-void backspace() {
+void backspace() { //TODO anda para el ogt con enter
 	if(cursorY > 0 || cursorX > 0) {
 		video[cursorY][cursorX].ch = ' ';
 		if(cursorX == 0) {
-			cursorX = width-1;
+			cursorX = WIDTH-1;
 			cursorY--;
 		}
 		else
@@ -100,7 +97,7 @@ void cursorUp() {
 }
 
 void cursorDown() {
-	if(cursorY < height-1)
+	if(cursorY < HEIGHT-1)
 		cursorY++;
 }
 
@@ -110,7 +107,7 @@ void cursorLeft() {
 }
 
 void cursorRight() {
-	if(cursorX < width-1)
+	if(cursorX < WIDTH-1)
 		cursorX++;
 }
 
@@ -119,16 +116,16 @@ void blinkCursor() {
 }
 
 void shiftScreen() {
-	memcpy((uint8_t*) video[0], (uint8_t*) video[1], cellSize*width*(height-1));
-	for(uint8_t x = 0; x < width; x++) {
-			video[height-1][x].ch = ' ';
-			video[height-1][x].style = defaultStyle;
+	memcpy((uint8_t*) video[0], (uint8_t*) video[1], CELLSIZE*WIDTH*(HEIGHT-1));
+	for(uint8_t x = 0; x < WIDTH; x++) {
+			video[HEIGHT-1][x].ch = ' ';
+			video[HEIGHT-1][x].style = defaultStyle;
 	}
 }
 
 void clearScreen() {
-	for(uint8_t y = 0; y < height; y++) {
-		for(uint8_t x = 0; x < width; x++) {
+	for(uint8_t y = 0; y < HEIGHT; y++) {
+		for(uint8_t x = 0; x < WIDTH; x++) {
 			video[y][x].ch = ' ';
 			video[y][x].style = defaultStyle;
 		}
