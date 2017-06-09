@@ -16,6 +16,9 @@ static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
 static char defaultStyle = 0x07;
 
+static uint8_t mouseX = 0;
+static uint8_t mouseY =0;
+
 static char buffer[64];
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
@@ -111,16 +114,22 @@ void cursorRight() {
 		cursorX++;
 }
 
+void invertStyle(uint8_t x, uint8_t y) {
+	video[y][x].style = 0x77 ^ video[y][x].style;
+}
+
 void blinkCursor() {
-	video[cursorY][cursorX].style = 0x77 ^ video[cursorY][cursorX].style;
+	invertStyle(cursorX, cursorY);
 }
 
 void shiftScreen() {
+	invertStyle(mouseX, mouseY);
 	memcpy((uint8_t*) video[0], (uint8_t*) video[1], CELLSIZE*WIDTH*(HEIGHT-1));
 	for(uint8_t x = 0; x < WIDTH; x++) {
 			video[HEIGHT-1][x].ch = ' ';
 			video[HEIGHT-1][x].style = defaultStyle;
 	}
+	invertStyle(mouseX, mouseY);
 }
 
 void clearScreen() {
@@ -132,6 +141,17 @@ void clearScreen() {
 	}
 	cursorX = 0;
 	cursorY = 0;
+}
+
+void updateMouse(uint8_t x, uint8_t y) {
+    invertStyle(mouseX, mouseY);
+    mouseX = x;
+    mouseY = y;
+    invertStyle(mouseX, mouseY);
+}
+
+uint8_t getCharAt(uint8_t x, uint8_t y) {
+    return video[y][x].ch;
 }
 
 void printBase(uint64_t value, uint32_t base) {

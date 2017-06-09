@@ -3,9 +3,12 @@
 
 #include <stdint.h>
 
-uint8_t mouse_read();
-void mouse_write(uint8_t a_write);
+uint8_t mouseRead();
+void mouseWrite(uint8_t a_write);
+void mouseWait(uint8_t type);
 void initializeMouse();
 void mouseHandler();
+uint8_t moveMouse(char deltaX, char deltaY);
+void copySelection();
 
 #endif

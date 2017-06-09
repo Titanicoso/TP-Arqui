@@ -32,11 +32,17 @@ void cursorLeft();
 
 void cursorRight();
 
+void invertStyle(uint8_t x, uint8_t y);
+
 void blinkCursor();
 
 void shiftScreen();
 
 void clearScreen();
+
+void updateMouse(uint8_t x, uint8_t y);
+
+uint8_t getCharAt(uint8_t x, uint8_t y);
 
 void printBase(uint64_t value, uint32_t base);
 
