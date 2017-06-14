@@ -28,20 +28,28 @@ void printcWithStyle(char ch, char style) {
 			newLine();
 			break;
 		default:
-			videoBuffer[cursorY][cursorX].style = style;
-			videoBuffer[cursorY][cursorX].ch = ch;
-			writeAtCursor(ch, style);
-			incrementCursor();
+			toggleCursors();
+			printChar(ch, style);
+			toggleCursors();
 			break;
 	}
 }
 
+void printChar(char ch, char style) {
+	videoBuffer[cursorY][cursorX].style = style;
+	videoBuffer[cursorY][cursorX].ch = ch;
+	writeAtCursor(ch, style);
+	incrementCursor();
+}
+
 void print(char *s) {
+	toggleCursors();
 	int i = 0;
 	while(s[i] != 0) {
-		printc(s[i]);
+		printChar(s[i], defaultStyle);
 		i++;
 	}
+	toggleCursors();
 }
 
 void println(char *s) {
@@ -57,25 +65,30 @@ void incrementCursor() {
 	if(cursorX == WIDTH-1) {
 		cursorX = 0;
 
-		if(cursorY-videoY == HEIGHT-1)
+		if(cursorY == HEIGHT-1)
 			shiftScreen();
-		cursorY++;
 	}
 	else
 		cursorX++;
+	
+	updateCursor(cursorX, cursorY);
 }
 
 void newLine() {
+	toggleCursors();
 	cursorX = 0;
 
 	if(cursorY == HEIGHT-1)
 		shiftScreen();
 	else
 		cursorY++;
+	updateCursor(cursorX, cursorY);
+	toggleCursors();
 }
 
 void backspace() { //TODO anda para el ogt con enter
 	if(cursorY > 0 || cursorX > 0) {
+		toggleCursors();
 		videoBuffer[cursorY][cursorX].ch = ' ';
 		if(cursorX == 0) {
 			cursorX = WIDTH-1;
@@ -83,6 +96,8 @@ void backspace() { //TODO anda para el ogt con enter
 		}
 		else
 			cursorX--;
+		updateCursor(cursorX, cursorY);
+		toggleCursors();
 	}
 }
 
@@ -106,12 +121,7 @@ void cursorRight() {
 		cursorX++;
 }
 
-void invertStyle(uint8_t x, uint8_t y) {
-	videoBuffer[y][x].style = 0x77 ^ videoBuffer[y][x].style;
-}
-
 void shiftScreen() {
-	invertStyle(mouseX, mouseY);
 	//memcpy((uint8_t*) video[0], (uint8_t*) video[1], CELLSIZE*WIDTH*(HEIGHT-1));
 	for(uint8_t x = 0; x < WIDTH; x++) {
 		videoBuffer[videoY+HEIGHT][x].ch = 0;
@@ -119,10 +129,10 @@ void shiftScreen() {
 	}
 	videoY++;
 	updateScreen();
-	invertStyle(mouseX, mouseY);
 }
 
 void clearScreen() {
+	toggleCursors();
 	cursorY++;
 	for(uint8_t y = cursorY; y < cursorY+HEIGHT; y++) {
 		for(uint8_t x = 0; x < WIDTH; x++) {
@@ -132,6 +142,8 @@ void clearScreen() {
 	}
 	cursorX = 0;
 	cursorY = 0;
+	updateCursor(0, 0);
+	toggleCursors();
 }
 
 void updateScreen() {

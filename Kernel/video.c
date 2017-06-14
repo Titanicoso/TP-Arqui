@@ -13,14 +13,12 @@ static uint8_t toY = 0;
 
 
 void writeScreen(uint8_t x, uint8_t y, char ch, char style) {
-	toggleCursors();
 	if(ch == 0)
 		video[y][x].ch = ' ';
 	else
 		video[y][x].ch = ch;
 	
 	video[y][x].style = style;
-	toggleCursors();
 }
 
 void writeAtCursor(char ch, char style) {
@@ -49,10 +47,8 @@ void toggleCursors() {
 }
 
 void updateCursor(uint8_t x, uint8_t y) {
-	toggleCursors();
 	cursorX = x;
 	cursorY = y;
-	toggleCursors();
 }
 
 void updateMouse(uint8_t x, uint8_t y) {
@@ -70,6 +66,7 @@ void selectTo(uint8_t x, uint8_t y) {
 }
 
 void blinkCursor() {
+	video[cursorY][cursorX].style = 0x77 ^ video[cursorY][cursorX].style;
 	if(cursorVisible)
 		cursorVisible = FALSE;
 	else
