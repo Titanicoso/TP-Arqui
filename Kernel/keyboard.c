@@ -1,5 +1,5 @@
 #include <keyboard.h>
-#include <console.h>
+#include <terminal.h>
 #include <lib.h>
 #include <scanCodes.h>
 

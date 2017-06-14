@@ -4,7 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <interruptions.h>
-#include <console.h>
+#include <terminal.h>
 #include <paging.h>
 extern uint8_t text;
 extern uint8_t rodata;
@@ -88,7 +88,6 @@ int main()
 {	
 	setupIDT();
 	clearScreen();
-
 	while (1) {
 		
 	}

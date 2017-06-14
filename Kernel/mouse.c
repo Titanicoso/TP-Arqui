@@ -1,7 +1,7 @@
 #include <mouse.h>
 #include <lib.h>
 #include <keyboard.h>
-#include <console.h>
+#include <terminal.h>
 
 #define DELAY 8
 

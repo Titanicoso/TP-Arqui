@@ -1,5 +1,5 @@
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#ifndef TERMINAL_H
+#define TERMINAL_H
 
 #include <stdint.h>
 
@@ -33,8 +33,6 @@ void cursorLeft();
 void cursorRight();
 
 void invertStyle(uint8_t x, uint8_t y);
-
-void blinkCursor();
 
 void shiftScreen();
 

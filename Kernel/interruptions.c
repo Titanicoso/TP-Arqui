@@ -1,9 +1,10 @@
 //interruptions.c
 #include <interruptions.h>
 #include <lib.h>
-#include <console.h>
+#include <terminal.h>
 #include <keyboard.h>
 #include <mouse.h>
+#include <video.h>
 
 #pragma pack(push)
 #pragma pack(1)

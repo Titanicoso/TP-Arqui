@@ -1,27 +1,19 @@
-#include <console.h>
+#include <terminal.h>
 #include <lib.h>
-
-#define CELLSIZE 2
-
-typedef struct {
-	char ch;
-	char style;
-} cell_t;
+#include <video.h>
 
 
-typedef cell_t video_row[80];
-static video_row *video = (video_row*) 0xB8000;              
+static video_row videoBuffer[25];
 
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
+static uint8_t videoY = 0;
 static char defaultStyle = 0x07;
 
 static uint8_t mouseX = 0;
 static uint8_t mouseY =0;
 
 static char buffer[64];
-
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 void printc(char ch) {
 	printcWithStyle(ch, defaultStyle);
@@ -36,8 +28,9 @@ void printcWithStyle(char ch, char style) {
 			newLine();
 			break;
 		default:
-			video[cursorY][cursorX].ch = ch;
-			video[cursorY][cursorX].style = style;
+			videoBuffer[cursorY][cursorX].style = style;
+			videoBuffer[cursorY][cursorX].ch = ch;
+			writeAtCursor(ch, style);
 			incrementCursor();
 			break;
 	}
@@ -64,10 +57,9 @@ void incrementCursor() {
 	if(cursorX == WIDTH-1) {
 		cursorX = 0;
 
-		if(cursorY == HEIGHT-1)
+		if(cursorY-videoY == HEIGHT-1)
 			shiftScreen();
-		else
-			cursorY++;
+		cursorY++;
 	}
 	else
 		cursorX++;
@@ -84,7 +76,7 @@ void newLine() {
 
 void backspace() { //TODO anda para el ogt con enter
 	if(cursorY > 0 || cursorX > 0) {
-		video[cursorY][cursorX].ch = ' ';
+		videoBuffer[cursorY][cursorX].ch = ' ';
 		if(cursorX == 0) {
 			cursorX = WIDTH-1;
 			cursorY--;
@@ -115,43 +107,43 @@ void cursorRight() {
 }
 
 void invertStyle(uint8_t x, uint8_t y) {
-	video[y][x].style = 0x77 ^ video[y][x].style;
-}
-
-void blinkCursor() {
-	invertStyle(cursorX, cursorY);
+	videoBuffer[y][x].style = 0x77 ^ videoBuffer[y][x].style;
 }
 
 void shiftScreen() {
 	invertStyle(mouseX, mouseY);
-	memcpy((uint8_t*) video[0], (uint8_t*) video[1], CELLSIZE*WIDTH*(HEIGHT-1));
+	//memcpy((uint8_t*) video[0], (uint8_t*) video[1], CELLSIZE*WIDTH*(HEIGHT-1));
 	for(uint8_t x = 0; x < WIDTH; x++) {
-			video[HEIGHT-1][x].ch = ' ';
-			video[HEIGHT-1][x].style = defaultStyle;
+		videoBuffer[videoY+HEIGHT][x].ch = 0;
+		videoBuffer[videoY+HEIGHT][x].style;
 	}
+	videoY++;
+	updateScreen();
 	invertStyle(mouseX, mouseY);
 }
 
 void clearScreen() {
-	for(uint8_t y = 0; y < HEIGHT; y++) {
+	cursorY++;
+	for(uint8_t y = cursorY; y < cursorY+HEIGHT; y++) {
 		for(uint8_t x = 0; x < WIDTH; x++) {
-			video[y][x].ch = ' ';
-			video[y][x].style = defaultStyle;
+			videoBuffer[y][x].ch = ' ';
+			videoBuffer[y][x].style = defaultStyle;
 		}
 	}
 	cursorX = 0;
 	cursorY = 0;
 }
 
-void updateMouse(uint8_t x, uint8_t y) {
-    invertStyle(mouseX, mouseY);
-    mouseX = x;
-    mouseY = y;
-    invertStyle(mouseX, mouseY);
+void updateScreen() {
+	for(uint8_t y = videoY; y < videoY+HEIGHT; y++) {
+		for(uint8_t x = 0; x < WIDTH; x++) {
+				writeScreen(x, y-videoY, videoBuffer[y][x].ch, videoBuffer[y][x].style);
+		}
+	}
 }
 
 uint8_t getCharAt(uint8_t x, uint8_t y) {
-    return video[y][x].ch;
+    return videoBuffer[y][x].ch;
 }
 
 void printBase(uint64_t value, uint32_t base) {
@@ -171,36 +163,5 @@ void printBin(uint64_t value) {
 	printBase(value, 2);
 }
 
-//From naiveConsole.c
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base) {
-	char *p = buffer;
-	char *p1, *p2;
-	uint32_t digits = 0;
 
-	//Calculate characters for each digit
-	do
-	{
-		uint32_t remainder = value % base;
-		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
-		digits++;
-	}
-	while (value /= base);
-
-	// Terminate string in buffer.
-	*p = 0;
-
-	//Reverse string in buffer.
-	p1 = buffer;
-	p2 = p - 1;
-	while (p1 < p2)
-	{
-		char tmp = *p1;
-		*p1 = *p2;
-		*p2 = tmp;
-		p1++;
-		p2--;
-	}
-
-	return digits;
-}
 
