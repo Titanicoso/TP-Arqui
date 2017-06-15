@@ -85,9 +85,10 @@ void * initializeKernelBinary()
 }
 
 int main()
-{	
-	setupIDT();
+{		
 	clearScreen();
+	setupIDT();
+
 	while (1) {
 		
 	}

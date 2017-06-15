@@ -2,6 +2,7 @@
 #include <lib.h>
 #include <keyboard.h>
 #include <terminal.h>
+#include <video.h>
 
 #define DELAY 8
 
@@ -105,14 +106,15 @@ void mouseWait(uint8_t type)
 
 void mouseHandler() {
 	uint8_t hasMoved = FALSE;
-	info[byte++] = mouseRead();
-
-	if(info[0] & 0x80 || info[0] & 0x40) {
-		byte = 0;
-	}
+	if(readPort(0x64) & 0x20)
+		info[byte++] = mouseRead();
 
 	if(byte == 4) {
 		byte = 0;
+
+		if(info[0] & 0x80 || info[0] & 0x40) {
+			return;
+		}
 
 		if((info[0] & 0x1) && !left)  {
 			selected.start.x = cursor.x;
@@ -122,6 +124,7 @@ void mouseHandler() {
 		if(!(info[0] & 0x1) && left) {
             selected.end.x = cursor.x;
 			selected.end.y = cursor.y;
+			updateMouse(cursor.x, cursor.y);
 			clipboardIndex = 0;
             copySelection();
 			left = FALSE;
@@ -158,7 +161,10 @@ void mouseHandler() {
 	            counterY = 0;
 	        }
             if(hasMoved)
-            	updateMouse(cursor.x, cursor.y);
+            	if(!left)
+            		updateMouse(cursor.x, cursor.y);
+            	else
+            		selectTo(cursor.x, cursor.y);
 		}
 	}
 }
