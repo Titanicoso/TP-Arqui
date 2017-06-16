@@ -5,11 +5,13 @@
 #include <keyboard.h>
 #include <mouse.h>
 #include <video.h>
+#include <sysCalls.h>
+#include <rtc.h>
 
 #pragma pack(push)
 #pragma pack(1)
 
-typedef struct { 
+typedef struct {
 	uint16_t offset_l; //bit 0..15
 	uint16_t selector;
 	uint8_t zero_l;
@@ -58,24 +60,26 @@ void iSetHandler(int index, uint64_t handler) {
 	IDT[index].offset_l = (uint16_t) handler & 0xFFFF;
 	IDT[index].offset_m = (uint16_t) (handler >> 16) & 0xFFFF;
 	IDT[index].offset_h = (uint32_t) (handler >> 32) & 0xFFFFFFFF;
-	
+
 	IDT[index].selector = 0x08;
 	IDT[index].zero_l = 0;
-	
+
 	IDT[index].attrs = 0x8E;
-	IDT[index].zero_h = 0;	
-	
+	IDT[index].zero_h = 0;
+
 }
 
 void setupIDT() {
 	iSetHandler(0x20, (uint64_t) &irq0Handler);
 	iSetHandler(0x21, (uint64_t) &irq1Handler);
 	iSetHandler(0x2C, (uint64_t) &irq12Handler);
+	iSetHandler(0x80, (uint64_t) &int80Handler);
 
 	initializeMouse();
+	sysCallsSetup();
+	setupRTC();
 
 	setPicMaster(0xF9);
 	setPicSlave(0xFF);
 	sti();
 }
-

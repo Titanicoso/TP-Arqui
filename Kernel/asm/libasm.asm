@@ -1,43 +1,10 @@
 GLOBAL cpuVendor
-GLOBAL sti
-GLOBAL cli
-GLOBAL irq0Handler
-GLOBAL irq1Handler
-GLOBAL irq12Handler
-GLOBAL setPicMaster
-GLOBAL setPicSlave
 GLOBAL readPort
 GLOBAL writePort
-
-EXTERN irqDispatcher
-EXTERN sendEOI
 
 %include "./asm/macros.m"
 
 section .text
-
-irq0Handler:
-	irqHandler 0
-
-irq1Handler:
-	irqHandler 1
-
-irq12Handler:
-	irqHandler 12
-
-sti:
-	sti
-	ret
-
-cli:
-	cli
-	ret
-	
-setPicMaster:
-	setPicMask 0x21
-
-setPicSlave:
-	setPicMask 0xA1
 
 readPort:	;(Recibe el puerto a leer en rdi)
 	push rbp
