@@ -161,12 +161,11 @@ void mouseHandler() {
 	            counterY = 0;
 	        }
             if(hasMoved) {
-            	if(!left) {
+            	if(!left)
             		updateMouse(cursor.x, cursor.y);
-            		mouseWait(0);
-            	}
             	else
             		selectTo(cursor.x, cursor.y);
+            	mouseWait(0);
 			}
 		}
 	}
@@ -199,7 +198,7 @@ void copySelection() {
 
     while(y <= copy.end.y) {
         while(x <= copy.end.x) {
-            clipboard[clipboardIndex++] = getCharAt(copy.start.x, copy.start.y);
+            clipboard[clipboardIndex++] = getCharAt(x, y);
         	x++;
         }
         y++;

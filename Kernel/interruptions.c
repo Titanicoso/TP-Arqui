@@ -80,6 +80,6 @@ void setupIDT() {
 	setupRTC();
 
 	setPicMaster(0xF8);
-	setPicSlave(0xFF);
+	setPicSlave(0xEF);
 	sti();
 }
