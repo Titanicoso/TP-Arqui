@@ -14,7 +14,7 @@ uint8_t getTime(uint8_t value) {
   minutes = readPort(0x71);
   writePort(0x70, HOURS);
   hours = readPort(0x71);
-  writePort(0x70, DAYOFMONTH);
+  writePort(0x70, DAY);
   day = readPort(0x71);
   writePort(0x70, MONTH);
   month = readPort(0x71);
@@ -27,7 +27,7 @@ uint8_t getTime(uint8_t value) {
     case SECONDS: return seconds;
     case MINUTES: return minutes;
     case HOURS: return hours;
-    case DAYOFMONTH: return day;
+    case DAY: return day;
     case MONTH: return month;
     case YEAR: return year;
   }
