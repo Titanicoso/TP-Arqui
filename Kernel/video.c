@@ -34,10 +34,10 @@ void toggleCursors() {
 	if(cursorVisible)
 		video[cursorY][cursorX].style = 0x77 ^ video[cursorY][cursorX].style;
 
-	uint8_t xOff = toX - fromX;
-	uint8_t yOff = toY - fromY;
-	uint8_t xStep = (xOff > 0)? 1 : -1;
-	uint8_t yStep = (yOff > 0)? 1 : -1;
+	int xOff = toX - fromX;
+	int yOff = toY - fromY;
+	int xStep = (xOff > 0)? 1 : -1;
+	int yStep = (yOff > 0)? 1 : -1;
 	xOff += xStep;
 	yOff += yStep;
 	do {
@@ -46,7 +46,7 @@ void toggleCursors() {
 			xOff -= xStep;
 			video[fromY+yOff][fromX+xOff].style = 0x77 ^ video[fromY+yOff][fromX+xOff].style;
 		}while(xOff != 0);
-		xOff = toX - fromX;
+		xOff = toX - fromX + xStep;
 	}while(yOff != 0);
 }
 
