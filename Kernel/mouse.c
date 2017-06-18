@@ -4,7 +4,7 @@
 #include <terminal.h>
 #include <video.h>
 
-#define DELAY 8
+#define DELAY 20
 
 typedef struct {
 	uint8_t x;
@@ -122,11 +122,11 @@ void mouseHandler() {
 			left = TRUE;
 		}
 		if(!(info[0] & 0x1) && left) {
-            selected.end.x = cursor.x;
+      		selected.end.x = cursor.x;
 			selected.end.y = cursor.y;
 			updateMouse(cursor.x, cursor.y);
 			clipboardIndex = 0;
-            copySelection();
+      		copySelection();
 			left = FALSE;
 		}
 
@@ -144,7 +144,7 @@ void mouseHandler() {
 			counterY += info[2];
 
 			if(counterX >= DELAY || counterX <= -DELAY) {
-				counterX/=8;
+				counterX/=DELAY;
 				if(cursor.x + counterX <= WIDTH-1 && cursor.x + counterX >= 0) {
 	            	cursor.x += counterX;
 	            	hasMoved = TRUE;
@@ -153,25 +153,28 @@ void mouseHandler() {
 			}
 
 			if(counterY >= DELAY || counterY <= -DELAY) {
-				counterY/=8;
+				counterY/=DELAY;
 	            if(cursor.y - counterY<= HEIGHT-1 && cursor.y - counterY>= 0) {
 	            	cursor.y -= counterY;
 	            	hasMoved = TRUE;
 	            }
 	            counterY = 0;
 	        }
-            if(hasMoved)
-            	if(!left)
+            if(hasMoved) {
+            	if(!left) {
             		updateMouse(cursor.x, cursor.y);
+            		mouseWait(0);
+            	}
             	else
             		selectTo(cursor.x, cursor.y);
+			}
 		}
 	}
 }
 
 void copySelection() {
 	selection copy;
-    int x;
+    int x, y;
 
     if(selected.start.x > selected.end.x) {
         copy.start.x = selected.end.x;
@@ -192,14 +195,15 @@ void copySelection() {
     }
 
     x = copy.start.x;
+    y = copy.start.y;
 
-    while(copy.start.y <= copy.end.y) {
-        while(copy.start.x <= copy.end.x) {
+    while(y <= copy.end.y) {
+        while(x <= copy.end.x) {
             clipboard[clipboardIndex++] = getCharAt(copy.start.x, copy.start.y);
-        	copy.start.x++;
+        	x++;
         }
-        copy.start.y++;
-        copy.start.x = x;
+        y++;
+        x = copy.start.x;
        	clipboard[clipboardIndex++] = '\n';
     }
     mouseWait(0);
