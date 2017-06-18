@@ -30,7 +30,7 @@ static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;
 void tickHandler() {
 	static int count = 0;
 	count++;
-	if(count == 15*1000*1000) { //Cada 825ms
+	if(count == 10) { //Cada 825ms
 		blinkCursor();
 		count = 0;
 	}
@@ -79,7 +79,7 @@ void setupIDT() {
 	sysCallsSetup();
 	setupRTC();
 
-	setPicMaster(0xF9);
+	setPicMaster(0xF8);
 	setPicSlave(0xFF);
 	sti();
 }

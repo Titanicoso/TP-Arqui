@@ -24,6 +24,7 @@ typedef cell_t video_row[80];
 void blinkCursor();
 void writeAtCursor(char ch, char style);
 void writeScreen(uint8_t x, uint8_t y, char ch, char style);
+void updateCursor(uint8_t x, uint8_t y);
 void updateMouse(uint8_t x, uint8_t y);
 void selectTo(uint8_t x, uint8_t y);
 void toggleCursors();

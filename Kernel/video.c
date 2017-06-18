@@ -17,7 +17,7 @@ void writeScreen(uint8_t x, uint8_t y, char ch, char style) {
 		video[y][x].ch = ' ';
 	else
 		video[y][x].ch = ch;
-	
+
 	video[y][x].style = style;
 }
 
@@ -26,7 +26,7 @@ void writeAtCursor(char ch, char style) {
 		video[cursorY][cursorX].ch = ' ';
 	else
 		video[cursorY][cursorX].ch = ch;
-	
+
 	video[cursorY][cursorX].style = style;
 }
 
@@ -38,10 +38,13 @@ void toggleCursors() {
 	uint8_t yOff = toY - fromY;
 	uint8_t xStep = (xOff > 0)? 1 : -1;
 	uint8_t yStep = (yOff > 0)? 1 : -1;
+	xOff += xStep;
+	yOff += yStep;
 	do {
+		yOff -= yStep;
 		do {
+			xOff -= xStep;
 			video[fromY+yOff][fromX+xOff].style = 0x77 ^ video[fromY+yOff][fromX+xOff].style;
-
 		}while(xOff != 0);
 	}while(yOff != 0);
 }
