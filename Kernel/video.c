@@ -46,6 +46,7 @@ void toggleCursors() {
 			xOff -= xStep;
 			video[fromY+yOff][fromX+xOff].style = 0x77 ^ video[fromY+yOff][fromX+xOff].style;
 		}while(xOff != 0);
+		xOff = toX - fromX;
 	}while(yOff != 0);
 }
 

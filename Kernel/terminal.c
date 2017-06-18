@@ -7,7 +7,6 @@ static video_row videoBuffer[HEIGHT];
 
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
-static uint8_t videoY = 0;
 static char defaultStyle = 0x07;
 
 static uint8_t mouseX = 0;
@@ -198,9 +197,9 @@ void cursorRight() {
 }
 
 void updateScreen() {
-	for(uint8_t y = videoY; y < videoY+HEIGHT; y++) {
+	for(uint8_t y = 0; y < HEIGHT; y++) {
 		for(uint8_t x = 0; x < WIDTH; x++) {
-				writeScreen(x, y-videoY, videoBuffer[y][x].ch, videoBuffer[y][x].style);
+				writeScreen(x, y, videoBuffer[y][x].ch, videoBuffer[y][x].style);
 		}
 	}
 }
