@@ -87,6 +87,7 @@ int scanf(const char* format, ...) {
                     char aux;
                     while( (aux = buffer[index++]) != '\0')
                         *(character++) = aux;
+                    *character = '\0';
                     read++;
                     break;
 			}
