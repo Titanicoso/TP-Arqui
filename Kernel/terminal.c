@@ -34,9 +34,7 @@ void printChar(char ch, char style) {
 	int y = cursorY;
 	int prevX = -1;
 	int prevY;
-	int offset = 0;
 	while(videoBuffer[y][x].ch != 0) {
-		offset++;
 		x++;
 		if(x == WIDTH) {
 			x = 0;
@@ -55,7 +53,7 @@ void printChar(char ch, char style) {
 		prevY = y;
 		if(prevX < 0) {
 			prevX = WIDTH-1;
-			y--;
+			prevY--;
 		}
 		videoBuffer[y][x] = videoBuffer[prevY][prevX];
 		x = prevX;
@@ -115,6 +113,8 @@ void incrementCursor() {
 
 		if(cursorY == HEIGHT-1)
 			shiftScreen();
+		else
+			cursorY++;
 	}
 	else
 		cursorX++;
@@ -124,16 +124,26 @@ void incrementCursor() {
 
 void newLine() {
 	toggleCursors();
-	// while (cursorX < WIDTH) {
-	// 	videoBuffer[cursorY][cursorX].ch = 0;
-	// 	cursorX++;
-	// }
+	while (videoBuffer[cursorY][cursorX].ch != 0) {
+		if(cursorX == WIDTH-1) {
+			cursorX = 0;
+			if(cursorY == HEIGHT-1)
+				shiftScreen();
+			else
+				cursorY++;
+		}
+		else
+			cursorX++;
+
+	}
+
 	cursorX = 0;
 
 	if(cursorY == HEIGHT-1)
 		shiftScreen();
 	else
 		cursorY++;
+
 	updateCursor(cursorX, cursorY);
 	updateScreen();
 	toggleCursors();
