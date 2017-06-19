@@ -13,6 +13,7 @@ GLOBAL int80
 EXTERN irqDispatcher
 EXTERN sysCallHandler
 EXTERN sendEOI
+EXTERN pageFaultHandler
 
 section .text
 
@@ -53,3 +54,6 @@ setPicMaster:
 
 setPicSlave:
 	setPicMask 0xA1
+
+PFHandler:
+	call pageFaultHandler
