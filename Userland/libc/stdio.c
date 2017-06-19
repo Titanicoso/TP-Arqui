@@ -3,6 +3,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define BUFFER_SIZE 25*80+1000
+
 extern void int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx);
 
 void write(int fd, char* buffer, int size) {
@@ -17,9 +19,12 @@ void putchar(char c) {
 	write(1, &c, 1);
 }
 
-int getchar() {
+char getchar() {
 	char ch;
-	read(0, &ch, 1);
+	do
+		read(0, &ch, 1);
+	while(ch == '\0');
+	return ch;
 }
 
 int printf(const char* format, ...) {
@@ -60,10 +65,10 @@ int scanf(const char* format, ...) {
 	int index = 0;
 	int length;
 	char ch;
-	char buffer[256];
+	char buffer[BUFFER_SIZE];
     char* character;
 
-    length = readLine(buffer,256);
+    length = readLine(buffer,BUFFER_SIZE);
 
 	while((ch = *(format++)) != '\0' && buffer[index] !='\0') {
 		if(ch == '%') {
@@ -86,11 +91,8 @@ int scanf(const char* format, ...) {
                     break;
 			}
 		}
-		else {
-			if(ch != buffer[index++])
-				return read;
-			format++;
-		}
+		if(ch != buffer[index++]) 
+			return read;
     }
 	return read;
 }
