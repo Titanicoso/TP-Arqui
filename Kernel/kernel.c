@@ -16,7 +16,8 @@ extern uint8_t endOfKernel;
 static const uint64_t PageSize = 0x400000;
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x600000;
+static void * const sampleDataModuleAddress = (void*)0x500000;
+static void * const shellAddress = (void*)0x600000;
 static void * const executableMemoryAdress = (void*)0xA00000;
 
 typedef int (*EntryPoint)();
@@ -53,7 +54,8 @@ void * initializeKernelBinary()
 	ncNewline();
 	void * moduleAddresses[] = {
 		sampleCodeModuleAddress,
-		//sampleDataModuleAddress
+		sampleDataModuleAddress,
+		shellAddress
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
@@ -86,30 +88,13 @@ void * initializeKernelBinary()
 }
 
 int main()
-{		
+{
 	clearScreen();
 	setupIDT();
 
-	//ncPrint("[Kernel Main]");
-	//ncNewline();
-	//ncPrint("  Sample code module at 0x");
-	//ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	//ncNewline();
-	//ncPrint("  Calling the sample code module returned: ");
-	//copyAndExecuteModule(sampleCodeModuleAddress);
-	
-/*
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-*/
-
-	//ncPrint("[Finished]");
+	((EntryPoint)shellAddress)();
 
 	while (1) {
-		
+
 	}
 }
