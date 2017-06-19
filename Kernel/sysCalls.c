@@ -9,8 +9,11 @@ typedef void (*sys)(uint64_t rsi, uint64_t rdx, uint64_t rcx);
 static sys sysCalls[SYSCALLS];
 
 void sysRead(uint64_t fileDescriptor, uint64_t buffer, uint64_t size) {
+	int index = 0;
+	char c;
 	if(fileDescriptor == 0) {
-		/*ReadFromBuffer()*/;
+		while(index++ < size)
+			*((char*)buffer++)= readBuffer();
 	}
 }
 
