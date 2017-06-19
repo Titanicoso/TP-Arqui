@@ -2,8 +2,10 @@
 
 int main() {
   char buffer[128];
-
-  scanf("$> %s", buffer);
+  while(1) {
+    printf("$> ");
+    scanf("%s", buffer);
+  }
 
   return 0;
 }
