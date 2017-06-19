@@ -30,9 +30,43 @@ static char buffer[64];
 void updateScreen();
 
 void printChar(char ch, char style) {
+	int x = cursorX;
+	int y = cursorY;
+	int prevX = -1;
+	int prevY;
+	int offset = 0;
+	while(videoBuffer[y][x].ch != 0) {
+		offset++;
+		x++;
+		if(x == WIDTH) {
+			x = 0;
+			if(y == HEIGHT-1) {
+				if(cursorY == 0)
+					return;
+				shiftScreen();
+				cursorY--;
+			}
+			else
+				y++;
+		}
+	}
+	while(x != cursorX || y != cursorY) {
+		prevX = x-1;
+		prevY = y;
+		if(prevX < 0) {
+			prevX = WIDTH-1;
+			y--;
+		}
+		videoBuffer[y][x] = videoBuffer[prevY][prevX];
+		x = prevX;
+		y = prevY;
+	}
 	videoBuffer[cursorY][cursorX].style = style;
 	videoBuffer[cursorY][cursorX].ch = ch;
-	writeAtCursor(ch, style);
+	if(prevX == -1)
+		writeAtCursor(ch, style);
+	else
+		updateScreen();
 	incrementCursor();
 }
 
@@ -90,10 +124,10 @@ void incrementCursor() {
 
 void newLine() {
 	toggleCursors();
-	while (cursorX < WIDTH) {
-		videoBuffer[cursorY][cursorX].ch = 0;
-		cursorX++;
-	}
+	// while (cursorX < WIDTH) {
+	// 	videoBuffer[cursorY][cursorX].ch = 0;
+	// 	cursorX++;
+	// }
 	cursorX = 0;
 
 	if(cursorY == HEIGHT-1)
