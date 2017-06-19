@@ -3,16 +3,10 @@
 #include <lib.h>
 #include <scanCodes.h>
 
-#define BUFFER_SIZE (WIDTH*HEIGHT)+1000
-
-static uint8_t buffer[BUFFER_SIZE];
-static uint8_t writeIndex = 0;
-static uint8_t readIndex = 0;
 static uint8_t shiftMayus = 0;
 static uint8_t leftShift = FALSE;
 static uint8_t rightShift = FALSE;
 static uint8_t specialKey = FALSE;
-//static uint8_t mayus = 0;
 
 void keyboardHandler() {
 	uint8_t input = readPort(0x60);
@@ -30,8 +24,6 @@ void parseScanCode(uint8_t scanCode) {
 			case RIGHT_SHIFT_RELEASE:
 			case CAPSLOCK_PRESS:
 			case CAPSLOCK_RELEASE:
-			case BACKSPACE_PRESS:
-			case ENTER_PRESS:
 				parseSpecialKey(scanCode);
 				break;
 
@@ -42,10 +34,8 @@ void parseScanCode(uint8_t scanCode) {
 			default:
 				if(scanCode < 0x80) {
 					char ch = scanCodes[shiftMayus][scanCode];
-					if(ch != 0) {
-						printc(ch);
+					if(ch != 0)
 						writeBuffer(ch);
-					}
 				}
 				break;
 		}
@@ -81,48 +71,31 @@ void parseSpecialKey(uint8_t scanCode) {
 			shiftMayus = shiftMayus ^ MAYUS;
 			break;
 
-		/*case CAPSLOCK_RELEASE:
-			shiftMayus = shiftMayus & NOT_MAYUS;
-			printDec(shiftMayus);
-			break;*/
-
-		case BACKSPACE_PRESS:
-			backspace();
-			writeBuffer('\b');
-			break;
-
-		case ENTER_PRESS:
-			newLine();
-			writeBuffer('\n');
-			break;
-
-		case CURSOR_UP:
-			cursorUp();
-			break;
-
-		case CURSOR_DOWN:
-			cursorDown();
-			break;
+		// case BACKSPACE_PRESS:
+		// 	writeBuffer('\b');
+		// 	break;
+		//
+		// case ENTER_PRESS:
+		// 	writeBuffer('\n');
+		// 	break;
+		//
+		// case CURSOR_UP:
+		// 	cursorUp();
+		// 	break;
+		//
+		// case CURSOR_DOWN:
+		// 	cursorDown();
+		// 	break;
 
 		case CURSOR_LEFT:
-			cursorLeft();
+			keyboardLeft();
 			break;
 
 		case CURSOR_RIGHT:
-			cursorRight();
+			keyboardRight();
 			break;
 
 		default:
 			break;
 	}
 }
-
-void writeBuffer(char ch) {
-	buffer[writeIndex] = ch;
-	writeIndex++;
-}
-
-void writeStringToBuffer(char *s, uint16_t size) {
-
-}
-

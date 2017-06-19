@@ -33,6 +33,5 @@
 void keyboardHandler();
 void parseScanCode(uint8_t scanCode);
 void parseSpecialKey(uint8_t scanCode);
-void writeBuffer(char ch);
 
 #endif

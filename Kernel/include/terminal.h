@@ -5,6 +5,15 @@
 
 #define WIDTH 80
 #define HEIGHT 25
+#define BUFFER_SIZE (WIDTH*HEIGHT)+1000
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef  FALSE
+#define FALSE 0
+#endif
 
 void printc(char ch);
 
@@ -49,5 +58,15 @@ void printDec(uint64_t value);
 void printHex(uint64_t value);
 
 void printBin(uint64_t value);
+
+void writeBuffer(char ch);
+
+char readBuffer();
+
+void keyboardLeft();
+
+void keyboardRight();
+
+void setEcho(uint8_t boolean);
 
 #endif

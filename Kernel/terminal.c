@@ -4,6 +4,15 @@
 
 
 static video_row videoBuffer[HEIGHT];
+static char kbBuffer[BUFFER_SIZE];
+
+static uint16_t startIndex = 0;
+static uint16_t endIndex = 0;
+static uint16_t writeIndex = 0;
+static uint16_t readIndex = 0;
+static uint16_t size = 0;
+
+static uint8_t echo = TRUE;
 
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
@@ -13,6 +22,10 @@ static uint8_t mouseX = 0;
 static uint8_t mouseY = 0;
 
 static char buffer[64];
+
+//==============================================================================
+//  VIDEO
+//==============================================================================
 
 void updateScreen();
 
@@ -247,4 +260,118 @@ void printHex(uint64_t value) {
 
 void printBin(uint64_t value) {
 	printBase(value, 2);
+}
+
+//==============================================================================
+//  KEYBOARD
+//==============================================================================
+
+void shiftLeft() {
+	if(writeIndex != startIndex) {
+		uint16_t from = writeIndex-1;
+		if(from < 0)
+			from = BUFFER_SIZE;
+		uint16_t to;
+		while(from != endIndex) {
+			to = from;
+			from++;
+			if(from == BUFFER_SIZE)
+				from = 0;
+			kbBuffer[to] = kbBuffer[from];
+		}
+	}
+}
+
+void shiftRight() {
+	if(writeIndex != endIndex) {
+		uint16_t from = endIndex;
+		uint16_t to;
+		do {
+			to = from;
+			from--;
+			if(from < 0)
+				from = BUFFER_SIZE;
+			kbBuffer[to] = kbBuffer[from];
+		}	while(from != writeIndex);
+	}
+}
+
+void writeBuffer(char ch) {
+	switch (ch) {
+		case '\b':
+			if(writeIndex != startIndex) {
+				shiftLeft();
+				writeIndex--;
+				if(writeIndex < 0)
+					writeIndex = BUFFER_SIZE;
+				endIndex--;
+				if(endIndex < 0)
+					endIndex = BUFFER_SIZE;
+				size--;
+				if(echo)
+					printc(ch);
+			}
+			break;
+		case '\n':
+			kbBuffer[endIndex] = ch;
+			endIndex++;
+			size++;
+			if(endIndex == BUFFER_SIZE)
+				endIndex = 0;
+			writeIndex = startIndex = endIndex;
+			if(echo)
+				printc(ch);
+			break;
+		default:
+			if(size < BUFFER_SIZE-1) {					//Dejar un espacio para \n
+				shiftRight();
+				kbBuffer[writeIndex] = ch;
+				writeIndex++;
+				if(writeIndex == BUFFER_SIZE)
+					writeIndex = 0;
+				endIndex++;
+				if(endIndex == BUFFER_SIZE)
+					endIndex = 0;
+				size++;
+			}
+			if(echo)
+				printc(ch);
+			break;
+	}
+}
+
+char readBuffer() {
+	char ch = 0;
+	if(readIndex < startIndex) {
+		ch = kbBuffer[readIndex];
+		readIndex++;
+		if(readIndex == BUFFER_SIZE)
+			readIndex = 0;
+		size--;
+	}
+	return ch;
+}
+
+void keyboardLeft() {
+	if(writeIndex != startIndex) {
+		writeIndex--;
+		if(writeIndex < 0)
+			writeIndex = BUFFER_SIZE;
+		if(echo)
+			cursorLeft();
+	}
+}
+
+void keyboardRight() {
+	if(writeIndex != endIndex) {
+		writeIndex++;
+		if(writeIndex == BUFFER_SIZE)
+			writeIndex = 0;
+		if(echo)
+			cursorRight();
+	}
+}
+
+void setEcho(uint8_t boolean) {
+	echo = boolean;
 }
