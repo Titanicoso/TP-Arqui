@@ -13,6 +13,8 @@ void sysGetTime(uint64_t hour, uint64_t minute, uint64_t seconds);
 
 void sysGetDate(uint64_t day, uint64_t month, uint64_t year);
 
+void sysEcho(uint64_t echoOn, uint64_t rdx, uint64_t rcx);
+
 void sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx);
 
 void sysCallsSetup();

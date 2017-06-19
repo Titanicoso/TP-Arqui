@@ -4,7 +4,7 @@
 #include <terminal.h>
 #include <video.h>
 
-#define DELAY 20
+#define DELAY 15
 
 typedef struct {
 	uint8_t x;
@@ -133,6 +133,7 @@ void mouseHandler() {
 		if((info[0] & 0x2) && !right)  {
 			for(int i = 0; i<clipboardIndex; i++) /*Para Probar*/
 				printc(clipboard[i]);
+			mouseWait(0);
 			right = TRUE;
 		}
 		if(!(info[0] & 0x2) && right)

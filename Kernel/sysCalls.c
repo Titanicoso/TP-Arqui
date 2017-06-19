@@ -47,6 +47,10 @@ void sysGetDate(uint64_t day, uint64_t month, uint64_t year) {
 	*(char*)year = getTime(YEAR);
 }
 
+void sysEcho(uint64_t echoOn, uint64_t rdx, uint64_t rcx) {
+	setEcho((uint8_t) echoOn);
+}
+
 void sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
 	if(rdi < 0 || rdi >= SYSCALLS)
 		return; //Tirar error??
@@ -60,4 +64,5 @@ void sysCallsSetup(){
 	sysCalls[3] = &sysSetTimeZone;
 	sysCalls[4] = &sysGetTime;
 	sysCalls[5] = &sysGetDate;
+	sysCalls[6] = &sysEcho;
 }
