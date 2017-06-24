@@ -9,13 +9,13 @@ static void * const shell = (void*)0x800000;
 static void * const executableMemoryAdress = (void*)0xA00000;
 
 void copyAndExectueDefaultModule(){
-	memcpy(executableMemoryAdress, sampleCodeModuleAddress, 0x20000);
-	((EntryPoint)sampleCodeModuleAddress)();
+	memcpy(executableMemoryAdress, shell, 0x20000);
+	((EntryPoint)executableMemoryAdress)();
 
 
 }
 void copyAndExecuteModule(void* moduleAdress){
-	memcpy(executableMemoryAdress, moduleAdress, 0x20000);
+	memcpy(executableMemoryAdress, moduleAdress, 0x200000);
 	((EntryPoint)executableMemoryAdress)();
 }
 
