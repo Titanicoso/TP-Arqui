@@ -20,7 +20,7 @@ static void * const sampleDataModuleAddress = (void*)0x600000;
 static void * const shellAddress = (void*)0x800000;
 static void * const executableMemoryAdress = (void*)0xA00000;
 
-typedef int (*EntryPoint)();
+typedef int (*EntryPoint)(int argc, char *argv[] );
 
 //mapPage(,(void*)0x800000,)
 
@@ -93,7 +93,7 @@ int main()
 	setupIDT();
 
 
-	copyAndExectueDefaultModule();
+	copyAndExectueDefaultModule(0,0);
 
 	while (1) {
 

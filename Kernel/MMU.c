@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <moduleLoader.h>
 
-typedef int (*EntryPoint)();
+typedef int (*EntryPoint)(int argc, char *argv[]);
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x600000;
@@ -10,13 +10,13 @@ static void * const executableMemoryAdress = (void*)0xA00000;
 
 void copyAndExectueDefaultModule(){
 	memcpy(executableMemoryAdress, shell, 0x20000);
-	((EntryPoint)executableMemoryAdress)();
+	((EntryPoint)executableMemoryAdress)(0,0);
 
 
 }
-void copyAndExecuteModule(void* moduleAdress){
+void copyAndExecuteModule(void* moduleAdress, int argc, char *argv[]){
 	memcpy(executableMemoryAdress, moduleAdress, 0x200000);
-	((EntryPoint)executableMemoryAdress)();
+	((EntryPoint)executableMemoryAdress)(argc, argv);
 }
 
 void setKernelPresent(int present){
