@@ -131,8 +131,8 @@ void mouseHandler() {
 		}
 
 		if((info[0] & 0x2) && !right)  {
-			for(int i = 0; i<clipboardIndex; i++) /*Para Probar*/
-				printc(clipboard[i]);
+			for(int i = 0; i<clipboardIndex; i++)
+				writeBuffer(clipboard[i]);
 			mouseWait(0);
 			right = TRUE;
 		}
