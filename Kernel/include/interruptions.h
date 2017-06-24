@@ -9,6 +9,7 @@ void setupIDT();
 void irqDispatcher(int irq);
 void tickHandler();
 
+extern void PFHandler();
 extern void irq0Handler();
 extern void irq1Handler();
 extern void irq12Handler();

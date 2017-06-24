@@ -3,6 +3,7 @@ GLOBAL cli
 GLOBAL irq0Handler
 GLOBAL irq1Handler
 GLOBAL irq12Handler
+GLOBAL PFHandler
 GLOBAL setPicMaster
 GLOBAL setPicSlave
 GLOBAL int80Handler
@@ -25,6 +26,10 @@ irq1Handler:
 
 irq12Handler:
 	irqHandler 12
+
+PFHandler:
+	mov DWORD[rbp+8], pageFaultHandler
+	iretq
 
 int80Handler:
 	pushaq
@@ -54,6 +59,3 @@ setPicMaster:
 
 setPicSlave:
 	setPicMask 0xA1
-
-PFHandler:
-	call pageFaultHandler
