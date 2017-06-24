@@ -39,15 +39,15 @@ void sysSetTimeZone(uint64_t timeZone, uint64_t rdx, uint64_t rcx) {
 }
 
 void sysGetTime(uint64_t hour, uint64_t minute, uint64_t seconds) { /*Puede optimizarse*/
-	*(char*)hour = getTime(HOURS);
-	*(char*)minute = getTime(MINUTES);
-	*(char*)seconds = getTime(SECONDS);
+	*(int*)hour = getTime(HOURS);
+	*(int*)minute = getTime(MINUTES);
+	*(int*)seconds = getTime(SECONDS);
 }
 
 void sysGetDate(uint64_t day, uint64_t month, uint64_t year) {
-	*(char*)day = getTime(DAY);
-	*(char*)month = getTime(MONTH);
-	*(char*)year = getTime(YEAR);
+	*(int*)day = getTime(DAY);
+	*(int*)month = getTime(MONTH);
+	*(int*)year = getTime(YEAR);
 }
 
 void sysEcho(uint64_t echoOn, uint64_t rdx, uint64_t rcx) {
