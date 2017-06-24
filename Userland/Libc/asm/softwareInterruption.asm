@@ -1,7 +1,6 @@
 GLOBAL int80
 
 %macro pushaq 0
-	push rax
 	push rbx
 	push rcx
 	push rdx
@@ -33,7 +32,6 @@ GLOBAL int80
 	pop rdx
 	pop rcx
 	pop rbx
-	pop rax
 %endmacro
 
 int80:

@@ -1,6 +1,5 @@
 
 %macro pushaq 0
-	push rax
 	push rbx
 	push rcx
 	push rdx
@@ -32,7 +31,6 @@
 	pop rdx
 	pop rcx
 	pop rbx
-	pop rax
 %endmacro
 
 %macro setPicMask 1

@@ -5,7 +5,7 @@
 
 #define BUFFER_SIZE 25*80+1000
 
-extern void int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx);
+extern int int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx);
 
 void write(int fd, char* buffer, int size) {
 	int80(1,fd,buffer,size);

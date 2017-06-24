@@ -15,6 +15,7 @@ EXTERN irqDispatcher
 EXTERN sysCallHandler
 EXTERN sendEOI
 EXTERN pageFaultHandler
+EXTERN runModule
 
 section .text
 
@@ -38,6 +39,12 @@ int80Handler:
 
 	popaq
 
+	cmp rdi, 7
+	jne .end
+	cmp rax, 0
+	jne .end
+	mov DWORD[rbp+8], runModule
+.end:
 	iretq
 
 int80: ; Int 80 No va aca, es solo para probar.

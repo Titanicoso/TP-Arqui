@@ -16,10 +16,10 @@ static void * const sampleCodeModuleAddress = (void*)0x800000;
 static void * const sampleDataModuleAddress = (void*)0x600000;
 static void * const shellAddress = (void*)0x400000;
 */
-static void * const executableMemoryAdress = (void*)0xA00000;
+static void * const executableMemoryAdress = (void*)0x400000;
 
-char* moduleNames[] = {"shell", "sampleDataModule", "sampleCodeModule", 0};
-void * moduleAddresses[] = {0x400000, 0x600000, 0x800000};
+char* moduleNames[] = {"shell", "sampleDataModule", "sampleCodeModule", "hello",0};
+void * moduleAddresses[] = {0x600000, 0x800000, 0xA00000, 0xC00000};
 
 
 void copyAndExectueDefaultModule(){
@@ -31,6 +31,15 @@ void copyAndExectueDefaultModule(){
 void copyAndExecuteModule(int moduleIndex, int argc, char *argv[]){
 	memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
 	((EntryPoint)executableMemoryAdress)(argc, argv);
+}
+
+void copyModule(int moduleIndex) {
+  memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
+}
+
+void runModule() {
+  ((EntryPoint)executableMemoryAdress)(0,0);
+  copyAndExectueDefaultModule();
 }
 
 void setKernelPresent(int present){
