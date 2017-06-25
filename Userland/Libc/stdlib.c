@@ -1,4 +1,11 @@
 
+void * malloc(unsigned int size) {
+	void * address;
+	int80(8,&address,size,0);
+	return address;
+}
+
+
 //Adapted from naiveterminal.c
 int itoa(int value, char * buffer, int base) {
 	char *p = buffer;

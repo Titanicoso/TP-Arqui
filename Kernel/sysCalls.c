@@ -77,6 +77,11 @@ int sysExec(uint64_t filename, uint64_t argc, uint64_t argv) {
 	return -1;
 }
 
+int sysMalloc(uint64_t address, uint64_t size, uint64_t rcx) {
+	*((void *)address) = malloc(size);
+	return 0;
+}
+
 int sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
 	if(rdi < 0 || rdi >= SYSCALLS)
 		return -1; //Tirar error??
@@ -92,4 +97,5 @@ void sysCallsSetup(){
 	sysCalls[5] = &sysGetDate;
 	sysCalls[6] = &sysEcho;
 	sysCalls[7] = &sysExec;
+	sysCalls[8] = &sysMalloc;
 }
