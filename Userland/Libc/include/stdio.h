@@ -13,6 +13,8 @@ int printf(const char* format, ...);
 
 int scanf(const char* format, ...);
 
+int sscanf(const char* format, const char * str, ...);
+
 int parseInt(char* string, int * value);
 
 int readLine(char * buffer, int maxSize);

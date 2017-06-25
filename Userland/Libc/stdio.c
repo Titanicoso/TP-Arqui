@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <strings.h>
 
 #define BUFFER_SIZE 25*80+1000
 
@@ -97,6 +98,44 @@ int scanf(const char* format, ...) {
     }
 	return read;
 }
+
+int sscanf(const char* format, const char* str, ...) {
+		va_list args;
+		va_start( args, format );
+		int read = 0;
+		int index;
+		char ch;
+    	char* character;
+
+		while((ch = *(format++)) != '\0' && *str !='\0') {
+		if(ch == '%') {
+			switch(ch = *(format++)) {
+				case 'd':
+                    index = parseInt(&str, va_arg(args,int*));
+                    str += index;
+					read++;
+					break;
+				case 'c':
+                    character = va_arg(args, char*);
+                    *character = *(str++);
+                    read++;
+                    break;
+				case 's':
+                    character = va_arg(args,char*);
+                    char aux;
+                    while( (aux = *(str++)) != '\0')
+                        *(character++) = aux;
+                    *character = '\0';
+                    read++;
+                    break;
+			}
+		}
+		if(ch != *(str++)) 
+			return read;
+    }
+	return read;
+}
+
 
 int parseInt(char* string, int * value) {
     *value = 0;
