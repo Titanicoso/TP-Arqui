@@ -44,7 +44,7 @@ int printf(const char* format, ...) {
 					length = itoa(num, number, 10);
 					write(1, number,length);
 					break;
-				case 'c': 
+				case 'c':
 					putchar((char)va_arg(args, int));
 					break;
 				case 's':
@@ -54,7 +54,7 @@ int printf(const char* format, ...) {
 			}
 		}
 		else
-			putchar(ch);	
+			putchar(ch);
 	}
 	return 0;
 }
@@ -67,101 +67,101 @@ int scanf(const char* format, ...) {
 	int length;
 	char ch;
 	char buffer[BUFFER_SIZE];
-    char* character;
+  char* character;
 
-    length = readLine(buffer,BUFFER_SIZE);
+  length = readLine(buffer,BUFFER_SIZE);
 
 	while((ch = *(format++)) != '\0' && buffer[index] !='\0') {
 		if(ch == '%') {
 			switch(ch = *(format++)) {
 				case 'd':
-                    index += parseInt(&buffer[index], va_arg(args,int*));
+          index += parseInt(&buffer[index], va_arg(args,int*));
 					read++;
 					break;
 				case 'c':
-                    character = va_arg(args, char*);
-                    *character = buffer[index++];
-                    read++;
-                    break;
+        	character = va_arg(args, char*);
+          *character = buffer[index++];
+          read++;
+          break;
 				case 's':
-                    character = va_arg(args,char*);
-                    char aux;
-                    while( (aux = buffer[index++]) != '\0')
-                        *(character++) = aux;
-                    *character = '\0';
-                    read++;
-                    break;
+          character = va_arg(args,char*);
+          char aux;
+          while( (aux = buffer[index++]) != '\0')
+          	*(character++) = aux;
+          *character = '\0';
+          read++;
+          break;
 			}
 		}
-		if(ch != buffer[index++]) 
+		if(ch != buffer[index++])
 			return read;
-    }
+  }
 	return read;
 }
 
 int sscanf(const char* format, const char* str, ...) {
-		va_list args;
-		va_start( args, format );
-		int read = 0;
-		int index;
-		char ch;
-    	char* character;
+	va_list args;
+	va_start( args, format );
+	int read = 0;
+	int index;
+	char ch;
+  char* character;
 
-		while((ch = *(format++)) != '\0' && *str !='\0') {
+	while((ch = *(format++)) != '\0' && *str !='\0') {
 		if(ch == '%') {
 			switch(ch = *(format++)) {
 				case 'd':
-                    index = parseInt(str, va_arg(args,int*));
-                    str += index;
+        	index = parseInt(str, va_arg(args,int*));
+          str += index;
 					read++;
 					break;
 				case 'c':
-                    character = va_arg(args, char*);
-                    *character = *(str++);
-                    read++;
-                    break;
+          character = va_arg(args, char*);
+          *character = *(str++);
+          read++;
+          break;
 				case 's':
-                    character = va_arg(args,char*);
-                    char aux;
-                    while( (aux = *(str++)) != '\0')
-                        *(character++) = aux;
-                    *character = '\0';
-                    read++;
-                    break;
+          character = va_arg(args,char*);
+          char aux;
+          while( (aux = *(str++)) != '\0')
+          	*(character++) = aux;
+          *character = '\0';
+          read++;
+          break;
 			}
 		}
-		if(ch != *(str++)) 
+		if(ch != *(str++))
 			return read;
-    }
+  }
 	return read;
 }
 
 
 int parseInt(char* string, int * value) {
-    *value = 0;
+  *value = 0;
 	int sign= 1;
 	int digits = 0;
 	char c;
 
-    if(*string == '-') {
+  if(*string == '-') {
 		if (isDigit(*(string + 1))) {
 			sign = -1;
 			digits++;
 			string++;
 		}
-		else 
+		else
 			return 0;
 	}
 
-    while (isDigit(c = *string)){
-        *value = (*value)*10+(c - '0');
-        digits++;
-        string++;
-    }
+  while (isDigit(c = *string)){
+		*value = (*value)*10+(c - '0');
+    digits++;
+    string++;
+  }
 
-    *value *= sign;
-    
-    return digits;
+  *value *= sign;
+
+  return digits;
 }
 
 int readLine(char * buffer, int maxSize) {
