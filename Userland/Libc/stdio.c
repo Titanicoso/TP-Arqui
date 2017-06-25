@@ -111,7 +111,7 @@ int sscanf(const char* format, const char* str, ...) {
 		if(ch == '%') {
 			switch(ch = *(format++)) {
 				case 'd':
-                    index = parseInt(&str, va_arg(args,int*));
+                    index = parseInt(str, va_arg(args,int*));
                     str += index;
 					read++;
 					break;
