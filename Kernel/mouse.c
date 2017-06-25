@@ -16,7 +16,7 @@ typedef struct {
 	position end;
 } selection;
 
-static signed char info[4];
+static signed char info[3];
 static uint8_t byte = 0;
 
 static char clipboard[WIDTH*HEIGHT + HEIGHT];
@@ -61,20 +61,6 @@ void initializeMouse() {
 	mouseRead();
 	mouseWrite(0xF4);
 	mouseRead();
-
-	/*Setup mouse scroll*/
-	mouseWrite(0xF3);
-	mouseRead();
-	mouseWrite(200);
-	mouseRead();
-	mouseWrite(0xF3);
-	mouseRead();
-	mouseWrite(100);
-	mouseRead();
-	mouseWrite(0xF3);
-	mouseRead();
-	mouseWrite(80);
-	mouseRead();
 }
 
 void mouseWait(uint8_t type)
@@ -109,7 +95,7 @@ void mouseHandler() {
 	if(readPort(0x64) & 0x20)
 		info[byte++] = mouseRead();
 
-	if(byte == 4) {
+	if(byte == 3) {
 		byte = 0;
 
 		if(info[0] & 0x80 || info[0] & 0x40) {
