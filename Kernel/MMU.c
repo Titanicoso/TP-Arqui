@@ -18,8 +18,8 @@ static void * const shellAddress = (void*)0x400000;
 */
 static void * const executableMemoryAdress = (void*)0x400000;
 
-char* moduleNames[] = {"shell", "sampleDataModule", "sampleCodeModule", "hello",0};
-void * moduleAddresses[] = {0x600000, 0x800000, 0xA00000, 0xC00000};
+char* moduleNames[] = {"shell", "sampleDataModule", "sampleCodeModule", "hello", "help", "date", "time", "clear",0};
+void * moduleAddresses[] = {0x600000, 0x800000, 0xA00000, 0xC00000, 0xE00000, 0x1000000, 0x1200000, 0x1400000};
 
 
 void copyAndExectueDefaultModule(){

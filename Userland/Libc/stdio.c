@@ -71,7 +71,7 @@ int scanf(const char* format, ...) {
 
   length = readLine(buffer,BUFFER_SIZE);
 
-	while((ch = *(format++)) != '\0' && buffer[index] !='\0') {
+	while((ch = *(format++)) != '\0') {
 		if(ch == '%') {
 			switch(ch = *(format++)) {
 				case 'd':
@@ -107,7 +107,7 @@ int sscanf(const char* format, const char* str, ...) {
 	char ch;
   char* character;
 
-	while((ch = *(format++)) != '\0' && *str !='\0') {
+	while((ch = *(format++)) != '\0') {
 		if(ch == '%') {
 			switch(ch = *(format++)) {
 				case 'd':

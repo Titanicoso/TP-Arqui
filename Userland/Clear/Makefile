@@ -1,6 +1,6 @@
 include ../Makefile.inc
 
-MODULE=0000-shell.bin
+MODULE=0007-clear.bin
 SOURCES=$(wildcard [^_]*.c)
 LIBC=$(wildcard ../Libc/*.o)
 
