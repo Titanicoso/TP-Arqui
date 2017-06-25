@@ -43,15 +43,9 @@ int80Handler:
 	jne .end
 	cmp rax, 0
 	jne .end
-	mov DWORD[rbp+8], runModule
+	mov QWORD[rsp], runModule
 .end:
 	iretq
-
-int80: ; Int 80 No va aca, es solo para probar.
-	pushaq
-	int 80h
-	popaq
-	ret
 
 sti:
 	sti
