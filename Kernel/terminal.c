@@ -258,11 +258,7 @@ void cursorRight() {
 }
 
 void updateScreen() {
-	for(uint8_t y = 0; y < HEIGHT; y++) {
-		for(uint8_t x = 0; x < WIDTH; x++) {
-				writeScreen(x, y, videoBuffer[y][x].ch, videoBuffer[y][x].style);
-		}
-	}
+	setScreen(videoBuffer);
 }
 
 void shiftScreen() {

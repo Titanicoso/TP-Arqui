@@ -33,3 +33,7 @@ void updateCursor(uint8_t x, uint8_t y) {
 void writeStyle(uint8_t x, uint8_t y, char style) {
 	video[y][x].style = style;
 }
+
+void setScreen(video_row* buffer) {
+	memcpy(video[0], buffer[0], CELLSIZE*WIDTH*HEIGHT);
+}
