@@ -59,6 +59,12 @@ void printHex(uint64_t value);
 
 void printBin(uint64_t value);
 
+void updateMouse(uint8_t x, uint8_t y);
+
+void selectTo(uint8_t x, uint8_t y);
+
+void blinkCursor();
+
 void writeBuffer(char ch);
 
 char readBuffer();

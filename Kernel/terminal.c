@@ -13,13 +13,16 @@ static uint16_t readIndex = 0;
 static uint16_t size = 0;
 
 static uint8_t echo = TRUE;
+static uint8_t cursorVisible = FALSE;
 
 static uint8_t cursorX = 0;
 static uint8_t cursorY = 0;
 static char defaultStyle = 0x07;
 
-static uint8_t mouseX = 0;
-static uint8_t mouseY = 0;
+static uint8_t fromX = 0;
+static uint8_t fromY = 0;
+static uint8_t toX = 0;
+static uint8_t toY = 0;
 
 static char buffer[64];
 
@@ -28,6 +31,7 @@ static char buffer[64];
 //==============================================================================
 
 void updateScreen();
+void toggleCursors();
 
 void printChar(char ch, char style) {
 	int x = cursorX;
@@ -304,6 +308,52 @@ void printHex(uint64_t value) {
 
 void printBin(uint64_t value) {
 	printBase(value, 2);
+}
+
+void toggleCursors() {
+	if(cursorVisible) {
+		videoBuffer[cursorY][cursorX].style = 0x77 ^ videoBuffer[cursorY][cursorX].style;
+		writeStyle(cursorX, cursorY, videoBuffer[cursorY][cursorX].style);
+	}
+
+	int xOff = toX - fromX;
+	int yOff = toY - fromY;
+	int xStep = (xOff > 0)? 1 : -1;
+	int yStep = (yOff > 0)? 1 : -1;
+	xOff += xStep;
+	yOff += yStep;
+	do {
+		yOff -= yStep;
+		do {
+			xOff -= xStep;
+			videoBuffer[fromY+yOff][fromX+xOff].style = 0x77 ^ videoBuffer[fromY+yOff][fromX+xOff].style;
+			writeStyle(fromX+xOff, fromY+yOff, videoBuffer[fromY+yOff][fromX+xOff].style);
+		}while(xOff != 0);
+		xOff = toX - fromX + xStep;
+	}while(yOff != 0);
+}
+
+void updateMouse(uint8_t x, uint8_t y) {
+	toggleCursors();
+	fromX = toX = x;
+	fromY = toY = y;
+	toggleCursors();
+}
+
+void selectTo(uint8_t x, uint8_t y) {
+	toggleCursors();
+	toX = x;
+	toY = y;
+	toggleCursors();
+}
+
+void blinkCursor() {
+	videoBuffer[cursorY][cursorX].style = 0x77 ^ videoBuffer[cursorY][cursorX].style;
+	writeStyle(cursorX, cursorY, videoBuffer[cursorY][cursorX].style);
+	if(cursorVisible)
+		cursorVisible = FALSE;
+	else
+		cursorVisible = TRUE;
 }
 
 //==============================================================================
