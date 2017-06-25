@@ -2,11 +2,13 @@
 #include <terminal.h>
 #include <lib.h>
 #include <scanCodes.h>
+#include <MMU.h>
 
 static uint8_t shiftMayus = 0;
 static uint8_t leftShift = FALSE;
 static uint8_t rightShift = FALSE;
 static uint8_t specialKey = FALSE;
+static uint8_t ctrl = FALSE;
 
 void keyboardHandler() {
 	uint8_t input = readPort(0x60);
@@ -35,7 +37,10 @@ void parseScanCode(uint8_t scanCode) {
 				if(scanCode < 0x80) {
 					char ch = scanCodes[shiftMayus][scanCode];
 					if(ch != 0)
-						writeBuffer(ch);
+						if(ctrl && ch == 'c')
+							copyAndExectueDefaultModule();
+						else
+							writeBuffer(ch);
 				}
 				break;
 		}
@@ -93,6 +98,14 @@ void parseSpecialKey(uint8_t scanCode) {
 
 		case CURSOR_RIGHT:
 			keyboardRight();
+			break;
+
+		case CTRL_PRESS:
+			ctrl = TRUE;
+			break;
+
+		case CTRL_RELEASE:
+			ctrl = FALSE;
 			break;
 
 		default:

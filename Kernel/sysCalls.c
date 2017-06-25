@@ -53,10 +53,6 @@ int sysGetTime(uint64_t hour, uint64_t minute, uint64_t seconds) { /*Puede optim
 	return 0;
 }
 
-int sysTimeMillis(uint64_t millis, uint64_t rdx, uint64_t rcx){
-	
-}
-
 int sysGetDate(uint64_t day, uint64_t month, uint64_t year) {
 	*(int*)day = getTime(DAY);
 	*(int*)month = getTime(MONTH);
@@ -96,5 +92,4 @@ void sysCallsSetup(){
 	sysCalls[5] = &sysGetDate;
 	sysCalls[6] = &sysEcho;
 	sysCalls[7] = &sysExec;
-	sysCalls[8] = &sysTimeMillis;
 }

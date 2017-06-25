@@ -29,6 +29,8 @@
 #define CURSOR_DOWN			0x50
 #define CURSOR_LEFT			0x4B
 #define CURSOR_RIGHT		0x4D
+#define CTRL_RELEASE		0x9D
+#define CTRL_PRESS			0x1D
 
 void keyboardHandler();
 void parseScanCode(uint8_t scanCode);
