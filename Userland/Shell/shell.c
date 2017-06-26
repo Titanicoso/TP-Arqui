@@ -4,12 +4,14 @@
 
 extern int int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx);
 
+char * array[] = {"Alooo"};
+
 int main(int argc, char *argv[]) {
   char buffer[128];
   while(1) {
     printf("$> ");
     scanf("%s", buffer);
-    if(execv(buffer,0,0) == -1)
+    if(execv(buffer,1,array) == -1)
       printf("%s: Invalid Module\n", buffer);
   }
 

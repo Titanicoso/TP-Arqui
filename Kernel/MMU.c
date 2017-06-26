@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <moduleLoader.h>
 #include <lib.h>
+#include <terminal.h>
 
 static const uint64_t PageSize = 0x200000;
 extern uint8_t text;
@@ -29,8 +30,6 @@ void copyAndExectueDefaultModule(){
 	memcpy(executableMemoryAdress, moduleAddresses[0], 0x200000);
   sti();
 	((EntryPoint)executableMemoryAdress)(0,0);
-
-
 }
 void copyAndExecuteModule(int moduleIndex, int argc, char *argv[]){
 	memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
@@ -61,16 +60,24 @@ void * malloc(uint64_t request) {
 }
 
 char** backupArguments(int argc, char * argv[]) {
-  if(argv >= executableMemoryAdress && argv < executableMemoryEndAdress) {
-    char ** temp = malloc(argc*sizeof(char **));
-    if(temp == 0)
-      return argv;
-    memcpy(temp, argv, argc*sizeof(char **));
-    argv = temp;
+  if(argc > 0) {
+    if(argv >= executableMemoryAdress && argv < executableMemoryEndAdress) {
+      char ** temp = malloc(argc*sizeof(char **));
+      if(temp == 0)
+        return argv;
+      memcpy(temp, argv, argc*sizeof(char **));
+      argv = temp;
+    }
+    for(int i = 0; i < argc; i++) {
+      size_t len = strlen(argv[i]) + 1;
+      char * temp = malloc(len*sizeof(char));
+      if(temp == 0)
+        break;
+      memcpy(temp, argv[i], len*sizeof(char));
+      argv[i] = temp;
+    }
   }
-  for(int i = 0; i < argc; i++) {
-    size_t len = strlen(argv[i]);
-  }
+  return argv;
 }
 
 void setKernelPresent(int present){
