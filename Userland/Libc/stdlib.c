@@ -5,6 +5,9 @@ void * malloc(unsigned int size) {
 	return address;
 }
 
+void free(void *ptr) {
+
+} 
 
 //Adapted from naiveterminal.c
 int itoa(int value, char * buffer, int base) {
