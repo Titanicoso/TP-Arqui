@@ -11,11 +11,7 @@ int main()
 {
 	clearScreen();
 	setupIDT();
-
-
+	
 	copyAndExectueDefaultModule(0,0);
 
-	while (1) {
-
-	}
 }
