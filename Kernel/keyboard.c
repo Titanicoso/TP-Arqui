@@ -39,8 +39,10 @@ void parseScanCode(uint8_t scanCode) {
 				if(scanCode < 0x80) {
 					char ch = scanCodes[shiftMayus][scanCode];
 					if(ch != 0)
-						if(ctrl && ch == 'c')
+						if(ctrl && ch == 'c') {
+							sendEOI(1);
 							copyAndExectueDefaultModule();
+						}
 						else
 							writeBuffer(ch);
 				}

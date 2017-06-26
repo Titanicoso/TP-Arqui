@@ -13,11 +13,7 @@ extern uint8_t endOfKernel;
 
 
 typedef int (*EntryPoint)(int argc, char *argv[]);
-/*
-static void * const sampleCodeModuleAddress = (void*)0x800000;
-static void * const sampleDataModuleAddress = (void*)0x600000;
-static void * const shellAddress = (void*)0x400000;
-*/
+
 static void * const executableMemoryAdress = (void*)0x400000;
 static void * const executableMemoryEndAdress = (void*)0x5FFFFF;
 static void * const heapAddress = (void*)0x600000;
@@ -35,15 +31,6 @@ void copyAndExecuteModule(int moduleIndex, int argc, char *argv[]){
 	memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
   sti();
 	((EntryPoint)executableMemoryAdress)(argc, argv);
-  copyAndExectueDefaultModule();
-}
-
-void copyModule(int moduleIndex) {
-  memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
-}
-
-void runModule() {
-  ((EntryPoint)executableMemoryAdress)(0,0);
   copyAndExectueDefaultModule();
 }
 
