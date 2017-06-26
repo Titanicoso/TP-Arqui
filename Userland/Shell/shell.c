@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     printf("$> ");
     scanf("%s", buffer);
     if(execv(buffer,0,0) == -1)
-      printf("Invalid Module\n");
+      printf("%s: Invalid Module\n", buffer);
   }
 
   return 0;

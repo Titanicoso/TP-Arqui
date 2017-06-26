@@ -1,7 +1,8 @@
 #include <stdint.h>
 #include <moduleLoader.h>
+#include <lib.h>
 
-static const uint64_t PageSize = 0x400000;
+static const uint64_t PageSize = 0x200000;
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -17,22 +18,25 @@ static void * const sampleDataModuleAddress = (void*)0x600000;
 static void * const shellAddress = (void*)0x400000;
 */
 static void * const executableMemoryAdress = (void*)0x400000;
+static void * const executableMemoryEndAdress = (void*)0x5FFFFF;
+static void * const heapAddress = (void*)0x600000;
 
 char* moduleNames[] = {"shell", "sampleDataModule", "sampleCodeModule", "hello", "help", "date", "time", "clear", "roflmao",0};
-void * moduleAddresses[] = {0x600000, 0x800000, 0xA00000, 0xC00000, 0xE00000, 0x1000000, 0x1200000, 0x1400000, 0x1600000};
+void * moduleAddresses[] = {0x0A00000, 0x0C00000, 0x0E00000, 0x1000000, 0x1200000, 0x1400000, 0x1600000, 0x1800000, 0x2000000};
 
 
 void copyAndExectueDefaultModule(){
 	memcpy(executableMemoryAdress, moduleAddresses[0], 0x200000);
-  //setKernelPresent(0);
+  sti();
 	((EntryPoint)executableMemoryAdress)(0,0);
 
 
 }
 void copyAndExecuteModule(int moduleIndex, int argc, char *argv[]){
 	memcpy(executableMemoryAdress, moduleAddresses[moduleIndex], 0x200000);
-  //setKernelPresent(0);
+  sti();
 	((EntryPoint)executableMemoryAdress)(argc, argv);
+  copyAndExectueDefaultModule();
 }
 
 void copyModule(int moduleIndex) {
@@ -42,6 +46,31 @@ void copyModule(int moduleIndex) {
 void runModule() {
   ((EntryPoint)executableMemoryAdress)(0,0);
   copyAndExectueDefaultModule();
+}
+
+void * malloc(uint64_t request) {
+  static uint64_t capacity = 0x200000;
+  static uint64_t size = 0;
+  uint64_t futureSize = size + request;
+  if(futureSize > capacity)
+    return 0;
+
+  uint64_t blockAddress = heapAddress + size;
+  size = futureSize;
+  return blockAddress;
+}
+
+char** backupArguments(int argc, char * argv[]) {
+  if(argv >= executableMemoryAdress && argv < executableMemoryEndAdress) {
+    char ** temp = malloc(argc*sizeof(char **));
+    if(temp == 0)
+      return argv;
+    memcpy(temp, argv, argc*sizeof(char **));
+    argv = temp;
+  }
+  for(int i = 0; i < argc; i++) {
+    size_t len = strlen(argv[i]);
+  }
 }
 
 void setKernelPresent(int present){
@@ -57,15 +86,15 @@ void changePDEPresent(int entry, int present){
 	uint64_t* PD = 0x10000;
 
 	while(entry){ 
-    PD + 0x8; 
+    PD += 0x8; 
     --entry; 
-  	} 
+  } 
  	uint64_t PDE = *PD;
  
  	if(present)
   		*PD =  PDE | 0x8F; 
   	else
-  		*PD = PDE & ~0x1;  
+  		*PD = PDE & 0xFE;  
 }
 
 void changePDE(int entry, uint64_t* physAddr, int present){ 
@@ -76,7 +105,7 @@ void changePDE(int entry, uint64_t* physAddr, int present){
   uint64_t *PD = 0x10000; 
  
   while(entry){ 
-    PD + 0x4; 
+    PD += 0x8; 
     --entry; 
   } 
 
@@ -111,5 +140,6 @@ void * initializeKernelBinary()
 
   loadModules(&endOfKernelBinary, moduleAddresses);
   clearBSS(&bss, &endOfKernel - &bss);
+  changePDEPresent(4, 0); //Empty page between heap and modules
   return getStackBase();
 }

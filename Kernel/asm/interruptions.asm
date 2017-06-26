@@ -38,13 +38,6 @@ int80Handler:
 	call sysCallHandler
 
 	popaq
-
-	cmp rdi, 7
-	jne .end
-	cmp rax, 0
-	jne .end
-	mov QWORD[rsp], runModule
-.end:
 	iretq
 
 sti:

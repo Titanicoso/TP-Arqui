@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -88,4 +89,14 @@ int strcmp(const char *str1, const char *str2) {
 		str2++;
 	}
 	return *str1 - *str2;
+}
+
+size_t strlen(const char *str) {
+	size_t length = 0;
+
+	while(*str != '\0') {
+		length++;
+		str++;
+	}
+	return length;
 }

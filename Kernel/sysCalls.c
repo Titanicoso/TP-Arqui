@@ -69,7 +69,8 @@ int sysExec(uint64_t filename, uint64_t argc, uint64_t argv) {
 	int i = 0;
 	while(moduleNames[i] != 0){
 		if(strcmp(filename, moduleNames[i]) == 0) {
-			copyModule(i);
+			//argv = backupArguments(argc, argv);
+			copyAndExecuteModule(i, argc, argv);
 			return 0;
 		}
 		i++;
@@ -78,7 +79,7 @@ int sysExec(uint64_t filename, uint64_t argc, uint64_t argv) {
 }
 
 int sysMalloc(uint64_t address, uint64_t size, uint64_t rcx) {
-	*((void *)address) = malloc(size);
+	*((uint64_t *)address) = malloc(size);
 	return 0;
 }
 
