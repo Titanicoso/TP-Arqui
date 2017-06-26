@@ -26,6 +26,8 @@ void parseScanCode(uint8_t scanCode) {
 			case RIGHT_SHIFT_RELEASE:
 			case CAPSLOCK_PRESS:
 			case CAPSLOCK_RELEASE:
+			case CTRL_PRESS:
+			case CTRL_RELEASE:
 				parseSpecialKey(scanCode);
 				break;
 
