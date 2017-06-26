@@ -80,22 +80,6 @@ void parseSpecialKey(uint8_t scanCode) {
 			shiftMayus = shiftMayus ^ MAYUS;
 			break;
 
-		// case BACKSPACE_PRESS:
-		// 	writeBuffer('\b');
-		// 	break;
-		//
-		// case ENTER_PRESS:
-		// 	writeBuffer('\n');
-		// 	break;
-		//
-		// case CURSOR_UP:
-		// 	cursorUp();
-		// 	break;
-		//
-		// case CURSOR_DOWN:
-		// 	cursorDown();
-		// 	break;
-
 		case CURSOR_LEFT:
 			keyboardLeft();
 			break;
